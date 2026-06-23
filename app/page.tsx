@@ -1,4 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 type Monster = {
   id: number;
@@ -33,24 +37,46 @@ const monsters: Monster[] = [
 ];
 
 export default function Home() {
-  const MonsterCount = 23;
-
   return (
     <main>
-      {monsters.map((monster, i) => {
-        return (
-          <div key={i}>
-            <Image
-              src={`/image/monster-${i + 1}.png`}
-              alt="Monster"
-              width={80}
-              height={80}
-            />
-            <h2>{monster.name}</h2>
-            <p>HP：100</p>
-          </div>
-        );
-      })}
+      <div className="grid grid-cols-3 container py-10">
+        {monsters.map((monster) => (
+          <MonsterCard key={monster.id} monster={monster} />
+        ))}
+      </div>
     </main>
+  );
+}
+
+function MonsterCard({ monster }: { monster: Monster }) {
+  const [hp, setHp] = useState(100);
+
+  return (
+    <div className="p-4 border shadow-sm">
+      <Image
+        src={`/image/monster-${monster.id + 1}.png`}
+        alt="Monster"
+        width={80}
+        height={80}
+      />
+      <h2>{monster.name}</h2>
+      <p>HP：{hp}</p>
+      <div className="h-3 rounded-full overflow-hidden">
+        <div
+          className="bg-lime-500 size-full transition duration-300"
+          style={{
+            width: `${hp}%`,
+          }}
+        ></div>
+      </div>
+      <Button
+        onClick={() => {
+          setHp((prev) => Math.max(0, prev - 10));
+        }}
+        disabled={hp <= 0}
+      >
+        攻撃
+      </Button>
+    </div>
   );
 }
